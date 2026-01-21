@@ -1,12 +1,11 @@
 package com.smartspend.smartspends.dto;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import com.smartspend.smartspends.model.ExpenseCategory;
 import com.smartspend.smartspends.model.PaymentMode;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,17 +13,13 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExpenseRequestDTO {
+public class ExpenseResponseDTO {
 
-    @NotNull(message = "Amount is required")
-    @Positive(message = "Amount must be positive")
+    private Long id;
     private BigDecimal amount;
-
-    @NotNull(message = "Category is required")
     private ExpenseCategory category;
-
-    @NotNull(message = "Payment mode is required")
     private PaymentMode paymentMode;
-
     private String description;
+    private LocalDateTime transactionDate;
+    private LocalDateTime createdAt;
 }
