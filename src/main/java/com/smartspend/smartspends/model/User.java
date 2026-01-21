@@ -41,7 +41,8 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(() -> role);
+        String roleWithPrefix = role.startsWith("ROLE_") ? role : "ROLE_" + role;
+        return List.of(() -> roleWithPrefix);
     }
 
     @Override

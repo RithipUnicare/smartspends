@@ -36,6 +36,7 @@ public class IncomeController {
             @Valid @RequestBody IncomeRequestDTO request) {
         try {
             IncomeResponseDTO income = incomeService.addIncome(user, request);
+            System.out.println("Added Income: " + income);
             return ResponseEntity.ok(new ApiResponse<>("Income added successfully", "SUCCESS", income));
         } catch (Exception e) {
             return ResponseEntity.badRequest()
@@ -46,7 +47,9 @@ public class IncomeController {
     @GetMapping
     public ResponseEntity<?> getAllIncomes(@AuthenticationPrincipal User user) {
         try {
+            System.err.println("Fetching incomes for user: " + user.getUsername());
             List<IncomeResponseDTO> incomes = incomeService.getAllIncomes(user);
+            System.out.println("Incomes: " + incomes);
             return ResponseEntity.ok(new ApiResponse<>("Incomes retrieved successfully", "SUCCESS", incomes));
         } catch (Exception e) {
             return ResponseEntity.badRequest()

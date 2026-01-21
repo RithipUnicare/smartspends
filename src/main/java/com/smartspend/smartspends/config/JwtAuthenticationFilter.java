@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.smartspend.smartspends.model.User;
+import com.smartspend.smartspends.repository.UserRepository;
 import com.smartspend.smartspends.service.CustomUserDetailsService;
 
 import jakarta.servlet.FilterChain;
@@ -27,6 +29,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -41,18 +46,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String mobileNumber = JwtUtil.extractMobileNumber(token);
 
         if (mobileNumber != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = customUserDetailsService.loadUserByUsername(mobileNumber);
+            User user = userRepository.findByMobileNumber(mobileNumber).orElse(null);
 
-            if (JwtUtil.isTokenValid(token, mobileNumber)) {
+            if (user != null && JwtUtil.isTokenValid(token, mobileNumber)) {
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
+                        user,
                         null,
-                        userDetails.getAuthorities());
-                authenticationToken.setDetails(userDetails);
+                        user.getAuthorities());
+                authenticationToken.setDetails(user);
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         }
 
+        filterChain.doFilter(request, response);
     }
 
 }
